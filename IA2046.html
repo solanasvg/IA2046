@@ -1,0 +1,2520 @@
+<html><head><base href="html">
+<title>The WayForward Machine 2.0</title>
+<style>
+  :root {
+    --primary-color: #00ff85;
+    --dark-color: #1a1a1a;
+    --accent-color: #ff3b7c;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+  }
+
+  body {
+    background: var(--dark-color);
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 800px;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .logo {
+    width: 300px;
+    margin: 2rem 0;
+    animation: glow 2s infinite alternate;
+  }
+
+  @keyframes glow {
+    from { filter: drop-shadow(0 0 2px var(--primary-color)); }
+    to { filter: drop-shadow(0 0 10px var(--primary-color)); }
+  }
+
+  .input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 2rem 0;
+    position: relative;
+  }
+
+  input {
+    padding: 1rem;
+    border: 2px solid var(--primary-color);
+    background: transparent;
+    color: white;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+  }
+
+  input:focus {
+    outline: none;
+    box-shadow: 0 0 15px var(--primary-color);
+  }
+
+  button {
+    padding: 1rem 2rem;
+    background: var(--primary-color);
+    border: none;
+    border-radius: 8px;
+    color: var(--dark-color);
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px var(--primary-color);
+  }
+
+  button::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+    transform: rotate(45deg);
+    animation: shine 3s infinite;
+  }
+
+  @keyframes shine {
+    from { transform: translateX(-100%) rotate(45deg); }
+    to { transform: translateX(100%) rotate(45deg); }
+  }
+
+  .loading {
+    display: none;
+    margin: 2rem 0;
+  }
+
+  .loading svg {
+    animation: rotate 2s linear infinite;
+  }
+
+  .result {
+    display: none;
+    margin: 2rem 0;
+    padding: 2rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    background: rgba(0,255,133,0.05);
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+  }
+
+  .result:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,255,133,0.2);
+  }
+
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .time-trail {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    animation: moveRight 2s infinite linear;
+  }
+
+  @keyframes moveRight {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
+  }
+
+  .stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+    background: rgba(0,0,0,0.2);
+    padding: 1rem;
+    border-radius: 8px;
+  }
+
+  .stat-item {
+    padding: 1rem;
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .stat-item:hover {
+    background: rgba(0,255,133,0.1);
+    transform: translateY(-2px);
+  }
+
+  .version-history {
+    margin-top: 2rem;
+    text-align: left;
+  }
+
+  .trend-indicator {
+    display: inline-block;
+    margin-left: 0.5rem;
+    font-size: 0.8em;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .trend-up {
+    background: rgba(0,255,133,0.2);
+    color: var(--primary-color);
+  }
+
+  .trend-down {
+    background: rgba(255,59,124,0.2);
+    color: var(--accent-color);
+  }
+
+  .pages-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+    width: 100%;
+  }
+
+  .page-card {
+    background: rgba(0,255,133,0.05);
+    border: 2px solid var(--primary-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .page-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,255,133,0.2);
+    background: rgba(0,255,133,0.1);
+  }
+
+  .page-preview {
+    width: 100%;
+    height: 150px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .page-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+  }
+
+  .page-card:hover .page-preview img {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+
+  .page-info {
+    text-align: left;
+  }
+
+  .page-title {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+  }
+
+  .page-meta {
+    font-size: 0.9rem;
+    color: #888;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .page-meta-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-author {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .author-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid var(--primary-color);
+  }
+
+  .page-stats {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: #888;
+  }
+
+  .page-stats span {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .page-date {
+    background: rgba(255,255,255,0.1);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 1rem;
+    margin: 2rem 0;
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+    padding-bottom: 1rem;
+  }
+
+  .tab {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+  }
+
+  .tab.active {
+    background: var(--primary-color);
+    color: var(--dark-color);
+  }
+
+  .tab:hover:not(.active) {
+    background: rgba(0,255,133,0.1);
+  }
+
+  .snapshots-timeline {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 1rem;
+  }
+
+  .snapshot-card {
+    background: rgba(0,255,133,0.05);
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .snapshot-card:hover {
+    transform: translateX(5px);
+    background: rgba(0,255,133,0.1);
+  }
+
+  .snapshot-date {
+    color: var(--primary-color);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  .snapshot-changes {
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+  }
+
+  .snapshot-change {
+    margin: 0.25rem 0;
+    color: #ccc;
+  }
+
+  .snapshot-link {
+    display: inline-block;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .snapshot-link:hover {
+    text-decoration: underline;
+    transform: translateX(5px);
+  }
+
+  .screenshots-section {
+    margin-top: 2rem;
+  }
+
+  .screenshot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .screenshot-item {
+    position: relative;
+    border: 2px solid var(--primary-color);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .screenshot-item:hover {
+    transform: scale(1.02);
+    box-shadow: 0 5px 20px rgba(0,255,133,0.2);
+  }
+
+  .screenshot-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+  }
+
+  .screenshot-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(5px);
+  }
+
+  .screenshot-date {
+    color: var(--primary-color);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  .screenshot-changes {
+    font-size: 0.85rem;
+    color: #ccc;
+  }
+
+  .screenshot-probability {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0,255,133,0.9);
+    color: black;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+
+  .snapshot-meta {
+    display: flex;
+    gap: 1rem;
+    color: #888;
+    font-size: 0.85rem;
+    margin: 0.5rem 0;
+  }
+
+  .snapshot-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .snapshot-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0,255,133,0.2);
+  }
+
+  .snapshot-source {
+    color: #888;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .snapshot-change i {
+    color: var(--primary-color);
+    font-size: 0.8em;
+    margin-right: 0.5rem;
+  }
+
+  .snapshot-analysis {
+    background: rgba(0,255,133,0.05);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+
+  .analysis-detail {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(0,255,133,0.1);
+  }
+
+  .analysis-metric {
+    color: var(--primary-color);
+    font-weight: bold;
+  }
+
+  .analysis-value {
+    color: #ccc;
+  }
+
+  .analysis-chart {
+    height: 4px;
+    background: rgba(0,255,133,0.1);
+    border-radius: 2px;
+    margin-top: 0.5rem;
+    position: relative;
+  }
+
+  .analysis-progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: var(--primary-color);
+    border-radius: 2px;
+    transition: width 1s ease-out;
+  }
+
+  .analysis-patterns {
+    margin-top: 2rem;
+  }
+
+  .pattern-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+
+  .pattern-category {
+    padding: 1rem;
+    background: rgba(0,255,133,0.1);
+    border-radius: 8px;
+  }
+
+  .history-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+    background: rgba(0,255,133,0.05);
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+
+  .history-filters {
+    margin-bottom: 1.5rem;
+    text-align: right;
+  }
+
+  .history-filters select {
+    background: rgba(0,255,133,0.1);
+    border: 1px solid var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .page-card.enhanced {
+    background: rgba(0,255,133,0.03);
+    transition: all 0.4s ease;
+  }
+
+  .accuracy-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0,255,133,0.9);
+    color: black;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    z-index: 1;
+  }
+
+  .prediction-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+  }
+
+  .prediction-time {
+    color: #888;
+  }
+
+  .prediction-status {
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+  }
+
+  .prediction-status.active {
+    background: rgba(0,255,133,0.2);
+    color: var(--primary-color);
+  }
+
+  .prediction-status.completed {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+
+  .page-stats.enhanced {
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+
+  .prediction-changes {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .prediction-changes h4 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+  }
+
+  .prediction-changes ul {
+    list-style: none;
+    font-size: 0.9rem;
+    color: #ccc;
+  }
+
+  .prediction-changes li {
+    margin: 0.3rem 0;
+    padding-left: 1.2rem;
+    position: relative;
+  }
+
+  .prediction-changes li:before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--primary-color);
+  }
+
+  .category-filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .category-btn {
+    padding: 0.5rem 1.5rem;
+    border: 1px solid var(--primary-color);
+    background: transparent;
+    color: var(--primary-color);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .category-btn.active {
+    background: var(--primary-color);
+    color: var(--dark-color);
+  }
+
+  .tag-container {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 0.5rem 0;
+  }
+
+  .tag {
+    padding: 0.2rem 0.8rem;
+    background: rgba(0,255,133,0.1);
+    border-radius: 12px;
+    font-size: 0.8rem;
+    color: var(--primary-color);
+  }
+
+  .category-label {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    padding: 0.3rem 0.8rem;
+    background: rgba(0,0,0,0.8);
+    color: var(--primary-color);
+    border-radius: 12px;
+    font-size: 0.8rem;
+  }
+
+  .change-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.3rem 0;
+    font-size: 0.9rem;
+    color: #ccc;
+  }
+
+  .high-accuracy {
+    background: var(--accent-color);
+  }
+
+  .future-warning {
+    margin: 2rem 0;
+    padding: 2rem;
+    background: rgba(255, 59, 124, 0.1);
+    border-radius: 12px;
+    border: 2px solid var(--accent-color);
+    text-align: left;
+  }
+
+  .future-warning h2 {
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+    text-align: center;
+  }
+
+  .future-warning > p {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+
+  .warning-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .warning-item {
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .warning-item:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 59, 124, 0.15);
+  }
+
+  .warning-item i {
+    font-size: 2rem;
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+  }
+
+  .warning-item h3 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+  }
+
+  .warning-item p {
+    color: #ccc;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .collaboration-section {
+    margin: 4rem 0;
+    padding: 3rem;
+    background: linear-gradient(45deg, rgba(0,255,133,0.1), rgba(255,59,124,0.1));
+    border-radius: 16px;
+    text-align: center;
+  }
+
+  .collaboration-section h2 {
+    color: var(--primary-color);
+    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .collaboration-section p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    color: #fff;
+  }
+
+  .action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .action-item {
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    border: 1px solid var(--primary-color);
+    transition: all 0.3s ease;
+  }
+
+  .action-item:hover {
+    transform: translateY(-5px);
+    background: rgba(0, 255, 133, 0.1);
+  }
+
+  .action-item i {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+  }
+
+  .action-item h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+  }
+
+  .action-item p {
+    font-size: 1rem;
+    color: #ccc;
+  }
+
+  .join-button {
+    display: inline-block;
+    padding: 1rem 2.5rem;
+    margin-top: 2rem;
+    background: var(--primary-color);
+    color: var(--dark-color);
+    border-radius: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .join-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px var(--primary-color);
+  }
+
+  .future-responsibility-section {
+    margin: 4rem 0;
+    padding: 3rem;
+    background: linear-gradient(135deg, rgba(0,255,133,0.05), rgba(255,59,124,0.05));
+    border-radius: 16px;
+    text-align: center;
+  }
+
+  .future-responsibility-section h2 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .future-responsibility-section > p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #fff;
+    max-width: 800px;
+    margin: 0 auto 3rem;
+  }
+
+  .impact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin: 3rem 0;
+  }
+
+  .impact-item {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--primary-color);
+    border-radius: 12px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+  }
+
+  .impact-item:hover {
+    transform: translateY(-5px);
+    background: rgba(0, 255, 133, 0.1);
+  }
+
+  .impact-icon {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+  }
+
+  .impact-item h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+  }
+
+  .impact-item p {
+    color: #ccc;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+  }
+
+  .impact-meter {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .impact-progress {
+    height: 100%;
+    background: var(--primary-color);
+    border-radius: 2px;
+    transition: width 1s ease-out;
+  }
+
+  .contribution-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+  }
+
+  .stat-block {
+    text-align: center;
+    min-width: 200px;
+  }
+
+  .stat-number {
+    display: block;
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-label {
+    color: #ccc;
+    font-size: 1.1rem;
+  }
+
+  .dystopia-warning {
+    width: 100%;
+    background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(20,20,20,0.95) 100%);
+    padding: 4rem 2rem;
+    margin-bottom: 4rem;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 2px solid var(--primary-color);
+  }
+
+  .dystopia-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .glitch-text {
+    font-size: 5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    position: relative;
+    text-shadow: 0 0 10px var(--primary-color);
+    animation: glitch 1s infinite;
+  }
+
+  .typing-text {
+    border-right: 2px solid var(--primary-color);
+    animation: typing 3s steps(40) infinite;
+  }
+
+  .warning-screen {
+    background: rgba(0,0,0,0.8);
+    border: 2px solid var(--accent-color);
+    padding: 2rem;
+    margin: 2rem 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .warning-symbol {
+    font-size: 4rem;
+    color: var(--accent-color);
+    text-align: center;
+    margin-bottom: 1rem;
+    animation: pulse 2s infinite;
+  }
+
+  .scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent-color);
+    animation: scan 2s linear infinite;
+  }
+
+  .blink-text {
+    animation: blink 1s step-end infinite;
+    color: var(--accent-color);
+    font-family: monospace;
+    margin: 1rem 0;
+  }
+
+  .dystopia-scenarios {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 3rem 0;
+  }
+
+  .scenario-card {
+    background: rgba(0,0,0,0.7);
+    border: 1px solid var(--primary-color);
+    padding: 2rem;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .scenario-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px rgba(0,255,133,0.2);
+  }
+
+  .scenario-icon {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+  }
+
+  .probability-meter {
+    margin-top: 1rem;
+    background: rgba(255,59,124,0.2);
+    height: 4px;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .probability-fill {
+    height: 100%;
+    background: var(--accent-color);
+    animation: fill 2s ease-out forwards;
+  }
+
+  .resistance-section {
+    text-align: center;
+    margin-top: 4rem;
+    padding: 2rem;
+    background: rgba(0,255,133,0.05);
+    border-radius: 10px;
+  }
+
+  .countdown {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+
+  .time-unit {
+    text-align: center;
+  }
+
+  .time-unit .number {
+    font-size: 3rem;
+    color: var(--primary-color);
+    font-weight: bold;
+    display: block;
+  }
+
+  .time-unit .label {
+    font-size: 0.8rem;
+    color: #888;
+  }
+
+  @keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+  }
+
+  @keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+  }
+
+  @keyframes scan {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(1000%); }
+  }
+
+  @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes fill {
+    from { width: 0; }
+    to { width: 85%; }
+  }
+
+  .search-section {
+    margin: 4rem 0;
+    padding: 3rem;
+    background: rgba(0,255,133,0.05);
+    border-radius: 16px;
+    text-align: center;
+  }
+
+  .search-header {
+    margin-bottom: 3rem;
+  }
+
+  .search-header h2 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+  }
+
+  .search-header p {
+    font-size: 1.2rem;
+    color: #fff;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .search-container {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 1.5rem;
+    padding-right: 4rem;
+    background: rgba(0,0,0,0.2);
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    color: white;
+    font-size: 1.2rem;
+  }
+
+  .search-input:focus {
+    outline: none;
+    box-shadow: 0 0 20px rgba(0,255,133,0.2);
+  }
+
+  .search-button {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .search-button:hover {
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  .search-results {
+    margin-top: 3rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .search-result-card {
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--primary-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .search-result-card:hover {
+    transform: translateY(-5px);
+    background: rgba(0,255,133,0.1);
+  }
+
+  .probability-bar {
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    margin: 1rem 0;
+    overflow: hidden;
+  }
+
+  .probability-fill {
+    height: 100%;
+    background: var(--primary-color);
+    transition: width 1s ease-out;
+  }
+
+  .search-suggestions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+
+  .suggestion-tag {
+    padding: 0.5rem 1.5rem;
+    background: rgba(0,255,133,0.1);
+    border: 1px solid var(--primary-color);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .suggestion-tag:hover {
+    background: var(--primary-color);
+    color: var(--dark-color);
+  }
+
+  .timeline-section {
+    margin: 4rem 0;
+    padding: 3rem;
+    background: linear-gradient(45deg, rgba(0,255,133,0.05), rgba(0,0,0,0.2));
+    border-radius: 16px;
+  }
+
+  .timeline-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .timeline-header h2 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+  }
+
+  .timeline-container {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .timeline-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--primary-color);
+    transform: translateX(-50%);
+  }
+
+  .timeline-item {
+    position: relative;
+    width: calc(50% - 30px);
+    margin-bottom: 3rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+  }
+
+  .timeline-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .timeline-item:nth-child(odd) {
+    margin-left: auto;
+    padding-left: 3rem;
+  }
+
+  .timeline-item:nth-child(even) {
+    padding-right: 3rem;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    top: 0;
+  }
+
+  .timeline-item:nth-child(odd) .timeline-dot {
+    left: -10px;
+  }
+
+  .timeline-item:nth-child(even) .timeline-dot {
+    right: -10px;
+  }
+
+  .timeline-content {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--primary-color);
+    border-radius: 12px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .timeline-content:hover {
+    transform: translateY(-5px);
+    background: rgba(0,255,133,0.1);
+  }
+
+  .timeline-year {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+  }
+
+  .timeline-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+  }
+
+  .timeline-content.active .timeline-details {
+    max-height: 500px;
+  }
+
+  .timeline-tech-stack {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+
+  .timeline-tech {
+    padding: 0.3rem 0.8rem;
+    background: rgba(0,255,133,0.1);
+    border-radius: 12px;
+    font-size: 0.8rem;
+    color: var(--primary-color);
+  }
+
+  .timeline-progress {
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    margin-top: 1rem;
+    overflow: hidden;
+  }
+
+  .timeline-progress-bar {
+    height: 100%;
+    background: var(--primary-color);
+    width: 0;
+    transition: width 1s ease-out;
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<div class="time-trail"></div>
+<div class="dystopia-warning">
+  <div class="dystopia-header">
+    <div class="glitch-text" data-text="IA2046">IA2046</div>
+    <h2>Information Access Protocol: <span class="typing-text">RESTRICTED</span></h2>
+  </div>
+  
+  <div class="dystopia-content">
+    <div class="warning-screen">
+      <div class="warning-symbol">⚠</div>
+      <div class="scan-line"></div>
+      <div class="warning-text">
+        <h3>ALERT: INFORMATION ACCESS BREACH DETECTED</h3>
+        <p class="blink-text">Unauthorized knowledge acquisition attempt logged.</p>
+        <div class="matrix-rain" id="matrixRain"></div>
+      </div>
+    </div>
+    
+    <div class="dystopia-scenarios">
+      <div class="scenario-card">
+        <div class="scenario-icon"><i class="fas fa-lock"></i></div>
+        <h4>Knowledge Lockdown</h4>
+        <p>In 2046, information access requires government-issued permits. Free learning is considered a threat to social order.</p>
+        <div class="probability-meter">
+          <div class="probability-fill"></div>
+          <span>Risk Level: High</span>
+        </div>
+      </div>
+      
+      <div class="scenario-card">
+        <div class="scenario-icon"><i class="fas fa-robot"></i></div>
+        <h4>AI Gatekeepers</h4>
+        <p>Artificial Intelligence systems now control what information humans can access, implementing strict "need-to-know" protocols.</p>
+        <div class="probability-meter">
+          <div class="probability-fill"></div>
+          <span>Risk Level: Critical</span>
+        </div>
+      </div>
+      
+      <div class="scenario-card">
+        <div class="scenario-icon"><i class="fas fa-database"></i></div>
+        <h4>Digital Dark Age</h4>
+        <p>90% of human knowledge exists only in proprietary formats, accessible exclusively through corporate subscriptions.</p>
+        <div class="probability-meter">
+          <div class="probability-fill"></div>
+          <span>Risk Level: Extreme</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="resistance-section">
+      <h3>Join the Digital Resistance</h3>
+      <div class="countdown" id="countdown">
+        <div class="time-unit">
+          <span class="number">23</span>
+          <span class="label">YEARS</span>
+        </div>
+        <div class="time-unit">
+          <span class="number">364</span>
+          <span class="label">DAYS</span>
+        </div>
+        <div class="time-unit">
+          <span class="number">59</span>
+          <span class="label">MINUTES</span>
+        </div>
+      </div>
+      <p>Time remaining to prevent this future</p>
+    </div>
+  </div>
+</div>
+
+<div class="timeline-section">
+  <div class="timeline-header">
+    <h2>Explore our interactive timeline</h2>
+    <p>Journey through the predicted evolution of digital knowledge and technology</p>
+  </div>
+  
+  <div class="timeline-container">
+    <div class="timeline-line"></div>
+    <div id="timeline-items">
+      <!-- Timeline items will be populated by JavaScript -->
+    </div>
+  </div>
+</div>
+
+<div class="search-section">
+  <div class="search-header">
+    <h2>Search the Future with the Wayforward Machine</h2>
+    <p>Explore predictions for any website, technology, or digital trend. Our advanced AI helps you peek into what's coming next.</p>
+  </div>
+
+  <div class="search-container">
+    <input type="text" class="search-input" id="futureSearch" placeholder="Search for websites, technologies, or trends...">
+    <button class="search-button" onclick="searchFuture()">
+      <i class="fas fa-search"></i>
+    </button>
+  </div>
+
+  <div class="search-suggestions">
+    <div class="suggestion-tag" onclick="setSearch('Web3')">Web3</div>
+    <div class="suggestion-tag" onclick="setSearch('Artificial Intelligence')">AI</div>
+    <div class="suggestion-tag" onclick="setSearch('Quantum Computing')">Quantum</div>
+    <div class="suggestion-tag" onclick="setSearch('Virtual Reality')">VR/AR</div>
+    <div class="suggestion-tag" onclick="setSearch('Neural Interfaces')">Neural Tech</div>
+  </div>
+
+  <div class="search-results" id="searchResults"></div>
+</div>
+
+<div class="container">
+  <img src="/logo (1).png" alt="Forward logo in bright green against white background" class="logo">
+  <h1>The WayForward Machine 2.0</h1>
+  <div class="future-warning">
+    <h2>Imagine a future without access to knowledge...</h2>
+    <p>In an increasingly digital world, preserving and protecting access to information is crucial. The WayForward Machine helps safeguard digital knowledge by:</p>
+    <div class="warning-grid">
+      <div class="warning-item">
+        <i class="fas fa-history"></i>
+        <h3>Preserving History</h3>
+        <p>Capturing and archiving valuable web content before it's lost forever</p>
+      </div>
+      <div class="warning-item">
+        <i class="fas fa-brain"></i>
+        <h3>Predicting Changes</h3>
+        <p>Using AI to anticipate and prepare for future transformations in digital knowledge</p>
+      </div>
+      <div class="warning-item">
+        <i class="fas fa-shield-alt"></i>
+        <h3>Protecting Access</h3>
+        <p>Ensuring continued access to critical information and resources</p>
+      </div>
+      <div class="warning-item">
+        <i class="fas fa-network-wired"></i>
+        <h3>Building Resilience</h3>
+        <p>Creating a more robust and distributed knowledge network</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="collaboration-section">
+    <h2>Together, we can find a better way forward</h2>
+    <p>Join our growing community of digital preservationists, innovators, and forward-thinkers who are working to protect and enhance access to knowledge for future generations.</p>
+    
+    <div class="action-grid">
+      <div class="action-item">
+        <i class="fas fa-users"></i>
+        <h3>Join the Community</h3>
+        <p>Connect with others who share your passion for preserving digital knowledge and shaping the future of information access.</p>
+      </div>
+      
+      <div class="action-item">
+        <i class="fas fa-lightbulb"></i>
+        <h3>Share Insights</h3>
+        <p>Contribute your unique perspective and help identify emerging trends and potential challenges in digital preservation.</p>
+      </div>
+      
+      <div class="action-item">
+        <i class="fas fa-code-branch"></i>
+        <h3>Collaborate</h3>
+        <p>Work together on innovative solutions and help build more resilient systems for preserving and accessing digital knowledge.</p>
+      </div>
+      
+      <div class="action-item">
+        <i class="fas fa-rocket"></i>
+        <h3>Shape the Future</h3>
+        <p>Be part of the movement that's actively working to ensure a future where knowledge remains accessible to all.</p>
+      </div>
+    </div>
+    
+    <a href="https://websim.ai/join" class="join-button">
+      Join the Movement <i class="fas fa-arrow-right"></i>
+    </a>
+  </div>
+
+  <div class="future-responsibility-section">
+    <h2>The future depends on us.</h2>
+    <p>Every action we take today shapes tomorrow's digital landscape. By preserving knowledge and fostering accessibility, we're building a legacy for generations to come.</p>
+    
+    <div class="impact-grid">
+      <div class="impact-item">
+        <div class="impact-icon">
+          <i class="fas fa-seedling"></i>
+        </div>
+        <h3>Plant Seeds of Change</h3>
+        <p>Each preserved webpage is a seed of knowledge that will grow into tomorrow's forest of information.</p>
+        <div class="impact-meter">
+          <div class="impact-progress" style="width: 75%"></div>
+        </div>
+      </div>
+      
+      <div class="impact-item">
+        <div class="impact-icon">
+          <i class="fas fa-hand-holding-heart"></i>
+        </div>
+        <h3>Nurture Knowledge</h3>
+        <p>We are the custodians of digital wisdom, ensuring its survival through technological evolution.</p>
+        <div class="impact-meter">
+          <div class="impact-progress" style="width: 85%"></div>
+        </div>
+      </div>
+      
+      <div class="impact-item">
+        <div class="impact-icon">
+          <i class="fas fa-bridge"></i>
+        </div>
+        <h3>Bridge Generations</h3>
+        <p>Today's preserved information becomes tomorrow's foundation for innovation and progress.</p>
+        <div class="impact-meter">
+          <div class="impact-progress" style="width: 90%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contribution-stats">
+      <div class="stat-block">
+        <span class="stat-number">1.2M+</span>
+        <span class="stat-label">Pages Preserved</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-number">50K+</span>
+        <span class="stat-label">Active Contributors</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-number">98%</span>
+        <span class="stat-label">Accessibility Rate</span>
+      </div>
+    </div>
+  </div>
+
+  <p>Peek into the future of any website using our advanced AI prediction engine</p>
+  
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('predict')">Predict</div>
+    <div class="tab" onclick="switchTab('history')">History</div>
+    <div class="tab" onclick="switchTab('trending')">Trending</div>
+  </div>
+
+  <div id="predict-tab">
+    <div class="input-container">
+      <input type="url" id="urlInput" placeholder="Enter website URL (e.g., https://example.com)" required>
+      <input type="date" id="dateInput" min="2024-01-01" max="2050-12-31" required>
+      <button onclick="predictFuture()">Predict Future</button>
+    </div>
+
+    <div class="loading" id="loading">
+      <svg width="50" height="50" viewBox="0 0 50 50">
+        <circle cx="25" cy="25" r="20" fill="none" stroke="var(--primary-color)" stroke-width="5" stroke-linecap="round">
+          <animate attributeName="stroke-dasharray" from="1,150" to="90,150" dur="1.5s" repeatCount="indefinite"/>
+          <animate attributeName="stroke-dashoffset" from="0" to="-35" dur="1.5s" repeatCount="indefinite"/>
+        </circle>
+      </svg>
+      <p>Analyzing temporal data patterns...</p>
+    </div>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <div id="history-tab" style="display: none;">
+    <h2>Your Previous Predictions</h2>
+    <div class="history-stats">
+      <div class="stat-item">
+        <h4>Total Predictions</h4>
+        <p>0</p>
+      </div>
+      <div class="stat-item">
+        <h4>Active Projects</h4>
+        <p>0</p>
+      </div>
+      <div class="stat-item">
+        <h4>Average Accuracy</h4>
+        <p>0%</p>
+      </div>
+    </div>
+    <div class="history-filters">
+      <select onchange="filterHistory(this.value)">
+        <option value="all">All Updates</option>
+        <option value="recent">Recent</option>
+        <option value="popular">Most Popular</option>
+        <option value="accurate">Most Accurate</option>
+      </select>
+    </div>
+    
+    <div class="category-filters">
+      <button onclick="filterByCategory('all')" class="category-btn active">All</button>
+      <button onclick="filterByCategory('ai')" class="category-btn">AI Enhanced</button>
+      <button onclick="filterByCategory('trending')" class="category-btn">Trending</button>
+      <button onclick="filterByCategory('recent')" class="category-btn">Recent</button>
+    </div>
+    
+    <div class="pages-container" id="history-pages"></div>
+  </div>
+
+  <div id="trending-tab" style="display: none;">
+    <h2>Trending Predictions</h2>
+    <div class="pages-container" id="trending-pages"></div>
+  </div>
+</div>
+
+<script>
+async function predictFuture() {
+  const url = document.getElementById('urlInput').value;
+  const date = document.getElementById('dateInput').value;
+  
+  if (!url || !date) {
+    alert('Please fill in both fields');
+    return;
+  }
+
+  const formattedDate = new Date(date).toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric'
+  });
+
+  const loading = document.getElementById('loading');
+  const result = document.getElementById('result');
+  
+  loading.style.display = 'block';
+  result.style.display = 'none';
+
+  try {
+    const prediction = await getFuturePrediction(url, formattedDate);
+    loading.style.display = 'none';
+    result.style.display = 'block';
+    result.innerHTML = `
+      <h2>Advanced AI Prediction for ${url} on ${formattedDate}:</h2>
+      
+      <div class="stats-container">
+        <div class="stat-item">
+          <h4>AI Confidence</h4>
+          <p>${prediction.metaAnalysis.confidence}%</p>
+          <div class="analysis-chart">
+            <div class="analysis-progress" style="width: ${prediction.metaAnalysis.confidence}%;"></div>
+          </div>
+        </div>
+        <div class="stat-item">
+          <h4>Data Points</h4>
+          <p>${prediction.metaAnalysis.analyzedSnapshots}</p>
+          <small>Historical snapshots</small>
+        </div>
+        <div class="stat-item">
+          <h4>Innovation Score</h4>
+          <p>${prediction.metaAnalysis.techScore}/100</p>
+        </div>
+        <div class="stat-item">
+          <h4>Market Alignment</h4>
+          <p>${prediction.metaAnalysis.marketScore || 85}/100</p>
+        </div>
+      </div>
+
+      <div class="analysis-patterns">
+        <h3>Pattern Analysis</h3>
+        <div class="pattern-grid">
+          ${Object.entries(prediction.patterns).map(([key, trends]) => `
+            <div class="pattern-category">
+              <h4>${key.replace(/([A-Z])/g, ' $1').trim()}</h4>
+              <ul>
+                ${trends.map(trend => `<li>${trend}</li>`).join('')}
+              </ul>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="version-history">
+        <h3>Predicted Changes:</h3>
+        ${prediction.changes.map((change, index) => `
+          <p style="margin: 1rem 0">
+            • ${change}
+            <span class="trend-indicator ${index % 2 === 0 ? 'trend-up' : 'trend-down'}">
+              ${index % 2 === 0 ? '↑ Trending' : '↓ Experimental'}
+            </span>
+          </p>
+        `).join('')}
+      </div>
+
+      <div style="margin-top: 2rem; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 8px;">
+        <h3>Analysis Summary</h3>
+        <p>${prediction.summary}</p>
+        <p style="color: #666; font-size: 0.9rem; margin-top: 1rem;">
+          Last analyzed: ${new Date().toLocaleDateString()} | Data reliability: ${prediction.reliability}%
+        </p>
+      </div>
+
+      <div style="margin-top: 2rem;">
+        <h3>Historical Snapshots</h3>
+        <div class="snapshots-timeline">
+          ${prediction.snapshots.map(snapshot => `
+            <div class="snapshot-card">
+              <div class="snapshot-date">
+                <i class="fas fa-calendar"></i>
+                ${new Date(snapshot.date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </div>
+              <div class="snapshot-meta">
+                <span><i class="fas fa-clock"></i> ${new Date(snapshot.date).toLocaleTimeString()}</span>
+                <span><i class="fas fa-code-branch"></i> Version ${snapshot.version || '1.0'}</span>
+                <span><i class="fas fa-chart-line"></i> Analysis Score: ${snapshot.analysisScore || '85'}%</span>
+              </div>
+              <div class="snapshot-analysis">
+                <div class="analysis-detail">
+                  <span class="analysis-metric">Content Changes</span>
+                  <span class="analysis-value">${snapshot.contentDiff || '12'} modifications</span>
+                </div>
+                <div class="analysis-detail">
+                  <span class="analysis-metric">Technology Updates</span>
+                  <span class="analysis-value">${snapshot.techUpdates || '3'} updates</span>
+                </div>
+                <div class="analysis-detail">
+                  <span class="analysis-metric">Design Evolution</span>
+                  <div class="analysis-chart">
+                    <div class="analysis-progress" style="width: ${snapshot.designScore || '75'}%;"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="snapshot-changes">
+                ${snapshot.changes.map(change => `
+                  <div class="snapshot-change">
+                    <i class="fas fa-circle-dot"></i>
+                    ${change}
+                  </div>
+                `).join('')}
+              </div>
+              <div class="snapshot-footer">
+                <a href="${snapshot.url}" target="_blank" class="snapshot-link">
+                  <i class="fas fa-external-link"></i> View Snapshot
+                </a>
+                <span class="snapshot-source">
+                  <i class="fas fa-database"></i> Source: Wayback Machine
+                </span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      
+      <div class="screenshots-section">
+        <h3>Predicted Visual Evolution</h3>
+        <div class="screenshot-grid">
+          ${prediction.captures.map(capture => `
+            <div class="screenshot-item">
+              <span class="screenshot-probability">${capture.probability}% probability</span>
+              <img 
+                src="${capture.imageUrl}" 
+                alt="Predicted appearance for ${capture.date}"
+                class="screenshot-image"
+              >
+              <div class="screenshot-overlay">
+                <div class="screenshot-date">${capture.date}</div>
+                <div class="screenshot-changes">
+                  ${capture.changes.map(change => `<div>• ${change}</div>`).join('')}
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  } catch (error) {
+    loading.style.display = 'none';
+    result.style.display = 'block';
+    result.innerHTML = `<p style="color: #ff4444;">Error: ${error.message}</p>`;
+  }
+}
+
+async function getFuturePrediction(url, date) {
+  try {
+    const response = await fetch('/api/ai_completion', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        prompt: `Analyze the following URL and generate an advanced prediction for ${date}. 
+        Perform deep analysis including:
+        - Historical trend analysis using non-linear regression
+        - Technology adoption patterns and cycles
+        - Industry-specific innovation forecasting
+        - Design evolution trajectories
+        - User behavior and interaction patterns
+        - Competitive landscape analysis
+        - Technological feasibility assessment
+        - Market dynamics impact
+        
+        Consider emerging technologies:
+        - Quantum computing adaptations
+        - Neural interfaces
+        - Advanced AR/VR/XR
+        - AI-driven personalization
+        - Blockchain integration
+        - Biometric authentication
+        - 6G connectivity features
+        
+        Provide certainty levels and multiple probability scenarios.
+        
+        <typescript-interface>
+        interface Prediction {
+          changes: string[];
+          metaAnalysis: {
+            confidence: number;
+            analyzedSnapshots: number;
+            techScore: number;
+            updateFrequency: string;
+            marketTrends: string[];
+            competitorAnalysis: string[];
+            riskAssessment: string[];
+          };
+          patterns: {
+            designTrends: string[];
+            userBehavior: string[];
+            techAdoption: string[];
+            contentStrategy: string[];
+          };
+          summary: string;
+          reliability: number;
+          snapshots: Array<{
+            date: string;
+            changes: string[];
+            url: string;
+            version?: string;
+            analysisScore?: number;
+            contentDiff?: number;
+            techUpdates?: number;
+            designScore?: number;
+            aiConfidence?: number;
+            marketRelevance?: number;
+            innovationScore?: number;
+          }>;
+          captures: Array<{
+            date: string;
+            imageUrl: string;
+            changes: string[];
+            probability: number;
+            designTrends: string[];
+            techFeatures: string[];
+            userImpact: string[];
+            feasibilityScore: number;
+          }>;
+        }
+        </typescript-interface>`,
+        data: url
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to get prediction');
+    }
+
+    const prediction = await response.json();
+    return enhancePrediction(prediction);
+  } catch (error) {
+    throw new Error('Failed to analyze website');
+  }
+}
+
+function enhancePrediction(prediction) {
+  // Add confidence weighting
+  prediction.confidence = calculateConfidenceScore(prediction);
+  
+  // Sort snapshots by relevance
+  prediction.snapshots = prediction.snapshots
+    .sort((a, b) => (b.analysisScore || 0) - (a.analysisScore || 0));
+    
+  // Filter out low probability captures
+  prediction.captures = prediction.captures
+    .filter(capture => capture.probability > 40)
+    .sort((a, b) => b.probability - a.probability);
+    
+  return prediction;
+}
+
+function calculateConfidenceScore(prediction) {
+  const weights = {
+    snapshotCount: 0.3,
+    techScore: 0.2,
+    patternStrength: 0.3,
+    dataReliability: 0.2
+  };
+  
+  const snapshotScore = Math.min(prediction.analyzedSnapshots / 100, 1) * 100;
+  const patternScore = prediction.patterns ? 85 : 60;
+  
+  return Math.round(
+    weights.snapshotCount * snapshotScore +
+    weights.techScore * prediction.metaAnalysis.techScore +
+    weights.patternStrength * patternScore +
+    weights.dataReliability * prediction.reliability
+  );
+}
+
+function switchTab(tabName) {
+  // Hide all tabs
+  document.getElementById('predict-tab').style.display = 'none';
+  document.getElementById('history-tab').style.display = 'none';
+  document.getElementById('trending-tab').style.display = 'none';
+  
+  // Show selected tab
+  document.getElementById(`${tabName}-tab`).style.display = 'block';
+  
+  // Update tab styles
+  document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+  document.querySelector(`.tab:nth-child(${tabName === 'predict' ? 1 : tabName === 'history' ? 2 : 3})`).classList.add('active');
+  
+  // Load content for the selected tab
+  if (tabName === 'history') {
+    loadHistory();
+  } else if (tabName === 'trending') {
+    loadTrending();
+  }
+}
+
+async function loadHistory() {
+  const historyContainer = document.getElementById('history-pages');
+  try {
+    // Fetch more data by increasing limit 
+    const [feedResponse, analyticsResponse, trendingResponse] = await Promise.all([
+      fetch('/api/v1/user/feed?first=30'),
+      fetch('/api/v1/user/following/projects?first=30'),
+      fetch('/api/v1/feed/trending?first=20')
+    ]);
+    
+    const feedData = await feedResponse.json();
+    const analyticsData = await analyticsResponse.json();
+    const trendingData = await trendingResponse.json();
+    
+    // Merge all data sources
+    const combinedHistory = [
+      ...feedData.feed.data,
+      ...analyticsData.projects.data,
+      ...trendingData.feed.data
+    ].sort((a, b) => new Date(b.site?.created_at) - new Date(a.site?.created_at));
+
+    // Add category labels
+    const categorizedHistory = combinedHistory.map(item => ({
+      ...item,
+      category: determineCategory(item)
+    }));
+
+    historyContainer.innerHTML = `
+      <div class="pages-container">
+        ${categorizedHistory.map(item => createEnhancedPageCard(item)).join('')}
+      </div>
+    `;
+  } catch (error) {
+    historyContainer.innerHTML = '<p>Failed to load history</p>';
+  }
+}
+
+function determineCategory(item) {
+  const categories = ['ai', 'trending', 'recent'];
+  return categories[Math.floor(Math.random() * categories.length)];
+}
+
+function generateTags(item) {
+  const allTags = [
+    'AI Enhanced', 'Mobile First', 'E-commerce', 'Blog', 
+    'Portfolio', 'Social Media', 'Business', 'Education',
+    'Entertainment', 'Technology', 'Health', 'News'
+  ];
+  return allTags.sort(() => 0.5 - Math.random()).slice(0, 3);
+}
+
+function createEnhancedPageCard(item) {
+  const stats = {
+    views: item.views || Math.floor(Math.random() * 1000),
+    likes: item.likes || Math.floor(Math.random() * 100),
+    remixes: item.remixes || Math.floor(Math.random() * 50),
+    accuracy: Math.round(Math.random() * 30 + 70)
+  };
+  
+  const tags = generateTags(item);
+  const changes = generateChangePredictions(item);
+  
+  return `
+    <div class="page-card enhanced ${item.category}" data-category="${item.category}">
+      <div class="page-preview">
+        <img src="https://images.websim.ai/v1/site/${item.site?.id}/600" 
+             alt="Preview of ${item.site?.title || 'Website'}"
+             loading="lazy">
+        <div class="accuracy-badge ${stats.accuracy > 85 ? 'high-accuracy' : ''}">
+          ${stats.accuracy}% Accuracy
+        </div>
+        <div class="category-label">${item.category}</div>
+      </div>
+      <div class="page-info">
+        <h3 class="page-title">${item.site?.title || 'Unnamed Website'}</h3>
+        <div class="tag-container">
+          ${tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+        </div>
+        <div class="prediction-details">
+          <div class="change-list">
+            ${changes.map(change => `
+              <div class="change-item">
+                <i class="fas ${getChangeIcon(change.type)}"></i>
+                ${change.text}
+              </div>
+            `).join('')}
+          </div>
+          <div class="meta-stats">
+            <span><i class="fas fa-eye"></i> ${formatNumber(stats.views)}</span>
+            <span><i class="fas fa-heart"></i> ${formatNumber(stats.likes)}</span>
+            <span><i class="fas fa-code-branch"></i> ${stats.remixes}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function getChangeIcon(type) {
+  const icons = {
+    design: 'fa-palette',
+    feature: 'fa-star',
+    performance: 'fa-gauge-high',
+    security: 'fa-shield',
+    content: 'fa-file-lines'
+  };
+  return icons[type] || 'fa-circle-dot';
+}
+
+function formatNumber(num) {
+  return num > 999 ? (num/1000).toFixed(1) + 'k' : num;
+}
+
+async function loadTrending() {
+  const trendingContainer = document.getElementById('trending-pages');
+  try {
+    const response = await fetch('/api/v1/feed/trending?first=20');
+    const data = await response.json();
+    
+    trendingContainer.innerHTML = data.feed.data.map(item => createPageCard(item)).join('');
+  } catch (error) {
+    trendingContainer.innerHTML = '<p>Failed to load trending predictions</p>';
+  }
+}
+
+function createPageCard(item) {
+  const stats = {
+    views: item.views || 0,
+    likes: item.likes || 0,
+    remixes: item.remixes || 0
+  };
+  
+  return `
+    <div class="page-card" onclick="showPrediction('${item.site.id}')">
+      <div class="page-preview">
+        <img src="https://images.websim.ai/v1/site/${item.site.id}/600" alt="Preview of ${item.site.title || 'Website'}">
+      </div>
+      <div class="page-info">
+        <h3 class="page-title">${item.site.title || 'Unnamed Prediction'}</h3>
+        <div class="page-meta">
+          <div class="page-meta-top">
+            <span class="page-author">
+              <img src="https://images.websim.ai/avatar/${item.site.owner.username}" alt="@${item.site.owner.username}" class="author-avatar">
+              @${item.site.owner.username}
+            </span>
+            <span class="page-date">${new Date(item.site.created_at).toLocaleDateString()}</span>
+          </div>
+          <div class="page-stats">
+            <span><i class="fas fa-eye"></i> ${stats.views}</span>
+            <span><i class="fas fa-heart"></i> ${stats.likes}</span>
+            <span><i class="fas fa-code-branch"></i> ${stats.remixes}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function showPrediction(siteId) {
+  try {
+    const response = await fetch(`/api/v1/sites/${siteId}`);
+    const data = await response.json();
+    
+    // Switch to predict tab and show the prediction
+    switchTab('predict');
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('result').innerHTML = `
+      <h2>Prediction for ${data.site.title || 'Website'}</h2>
+      <!-- Add prediction details here -->
+    `;
+  } catch (error) {
+    alert('Failed to load prediction');
+  }
+}
+
+// New function to filter by category
+function filterByCategory(category) {
+  // Update active button state
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.textContent.toLowerCase() === category) {
+      btn.classList.add('active');
+    }
+  });
+
+  // Get all page cards
+  const cards = document.querySelectorAll('.page-card');
+  
+  // Show/hide cards based on category
+  cards.forEach(card => {
+    if (category === 'all') {
+      card.style.display = 'block';
+    } else {
+      const cardCategory = card.dataset.category;
+      card.style.display = cardCategory === category ? 'block' : 'none';
+    }
+  });
+}
+
+// Helper function to generate change predictions
+function generateChangePredictions(item) {
+  const changeTypes = ['design', 'feature', 'performance', 'security', 'content'];
+  const changes = [];
+  
+  // Generate 2-3 random changes
+  const numChanges = Math.floor(Math.random() * 2) + 2;
+  
+  for (let i = 0; i < numChanges; i++) {
+    const type = changeTypes[Math.floor(Math.random() * changeTypes.length)];
+    let text = '';
+    
+    switch (type) {
+      case 'design':
+        text = 'Updated UI elements';
+        break;
+      case 'feature':
+        text = 'Added new functionality';
+        break;
+      case 'performance':
+        text = 'Improved load times';
+        break;
+      case 'security':
+        text = 'Enhanced security measures';
+        break;
+      case 'content':
+        text = 'Content optimization';
+        break;
+    }
+    
+    changes.push({ type, text });
+  }
+  
+  return changes;
+}
+
+// Update the filterHistory function to support multiple filter types
+function filterHistory(type) {
+  const historyPages = document.getElementById('history-pages');
+  const cards = Array.from(historyPages.querySelectorAll('.page-card'));
+  
+  switch (type) {
+    case 'recent':
+      cards.sort((a, b) => {
+        const dateA = new Date(a.querySelector('.page-date')?.textContent || 0);
+        const dateB = new Date(b.querySelector('.page-date')?.textContent || 0);
+        return dateB - dateA;
+      });
+      break;
+    case 'popular':
+      cards.sort((a, b) => {
+        const likesA = parseInt(a.querySelector('.fa-heart')?.nextSibling?.textContent || 0);
+        const likesB = parseInt(b.querySelector('.fa-heart')?.nextSibling?.textContent || 0);
+        return likesB - likesA;
+      });
+      break;
+    case 'accurate':
+      cards.sort((a, b) => {
+        const accuracyA = parseInt(a.querySelector('.accuracy-badge')?.textContent || 0);
+        const accuracyB = parseInt(b.querySelector('.accuracy-badge')?.textContent || 0);
+        return accuracyB - accuracyA;
+      });
+      break;
+    default:
+      // 'all' - restore original order
+      cards.sort((a, b) => {
+        const dateA = new Date(a.querySelector('.page-date')?.textContent || 0);
+        const dateB = new Date(b.querySelector('.page-date')?.textContent || 0);
+        return dateB - dateA;
+      });
+  }
+  
+  // Clear and re-append sorted cards
+  historyPages.innerHTML = '';
+  cards.forEach(card => historyPages.appendChild(card));
+}
+
+// Timeline initialization and management
+function initializeTimeline() {
+  const timelineItems = document.getElementById('timeline-items');
+  
+  // Timeline data
+  const timelineEvents = [
+    {
+      year: '2025',
+      title: 'Neural Web Integration',
+      description: 'Direct brain-to-internet interfaces become commercially available',
+      tech: ['Neural APIs', 'Brain-Computer Interface', 'Thought-to-Text'],
+      progress: 35,
+      completed: false
+    },
+    {
+      year: '2030',
+      title: 'Quantum Information Networks',
+      description: 'Quantum computing revolutionizes data storage and transmission',
+      tech: ['Quantum Encryption', 'Q-Bits', 'Quantum Cloud'],
+      progress: 25,
+      completed: false
+    },
+    {
+      year: '2035',
+      title: 'AI Knowledge Synthesis',
+      description: 'AI systems begin autonomously generating and validating new knowledge',
+      tech: ['Neural Networks', 'Knowledge Graphs', 'Autonomous Learning'],
+      progress: 15,
+    },
+    {
+      year: '2040',
+      title: 'Holographic Data Storage',
+      description: 'Information stored in crystalline structures at atomic level',
+      tech: ['Crystal Storage', 'Atomic Memory', '3D Data Arrays'],
+      progress: 10,
+      completed: false
+    },
+    {
+      year: '2046',
+      title: 'Digital Knowledge Lockdown',
+      description: 'Corporate entities gain unprecedented control over information access',
+      tech: ['Neural Firewalls', 'Thought Filtering', 'Access Control'],
+      progress: 5,
+      completed: false
+    }
+  ];
+
+  // Generate timeline items HTML
+  timelineItems.innerHTML = timelineEvents.map((event, index) => `
+    <div class="timeline-item" data-year="${event.year}">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content" onclick="toggleTimelineDetails(this)">
+        <div class="timeline-year">${event.year}</div>
+        <h3>${event.title}</h3>
+        <p>${event.description}</p>
+        <div class="timeline-details">
+          <div class="timeline-tech-stack">
+            ${event.tech.map(tech => `
+              <span class="timeline-tech">${tech}</span>
+            `).join('')}
+          </div>
+          <div class="timeline-progress">
+            <div class="timeline-progress-bar" style="width: ${event.progress}%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // Initialize timeline animations
+  initializeTimelineAnimations();
+}
+
+// Add timeline animation initialization
+function initializeTimelineAnimations() {
+  const timelineItems = document.querySelectorAll('.timeline-item');
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, {
+    threshold: 0.5
+  });
+
+  timelineItems.forEach(item => {
+    observer.observe(item);
+  });
+}
+
+// Add timeline item toggle function
+function toggleTimelineDetails(element) {
+  const wasActive = element.classList.contains('active');
+  
+  // Remove active class from all timeline contents
+  document.querySelectorAll('.timeline-content').forEach(content => {
+    content.classList.remove('active');
+  });
+  
+  // Toggle active class on clicked element
+  if (!wasActive) {
+    element.classList.add('active');
+  }
+}
+
+// Initialize the page
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize the default tab
+  switchTab('predict');
+  
+  // Create the matrix rain effect
+  createMatrixRain();
+  
+  // Initial countdown update
+  updateCountdown();
+  
+  // Set interval for countdown updates
+  setInterval(updateCountdown, 1000);
+  
+  // Initialize the timeline
+  initializeTimeline();
+});
+
+// Update countdown function
+function updateCountdown() {
+  const yearEl = document.querySelector('.countdown .time-unit:nth-child(1) .number');
+  const dayEl = document.querySelector('.countdown .time-unit:nth-child(2) .number');
+  const minuteEl = document.querySelector('.countdown .time-unit:nth-child(3) .number');
+  
+  if (!yearEl || !dayEl || !minuteEl) return; // Guard against null elements
+  
+  const now = new Date();
+  const future = new Date('2046-01-01');
+  const diff = future - now;
+  
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const years = Math.floor(days / 365);
+  const remainingDays = days % 365;
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  
+  yearEl.textContent = years;
+  dayEl.textContent = remainingDays;
+  minuteEl.textContent = minutes;
+}
+
+// Add this JavaScript to create the matrix rain effect
+function createMatrixRain() {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  const container = document.getElementById('matrixRain');
+  
+  canvas.width = container.offsetWidth;
+  canvas.height = 100;
+  container.appendChild(canvas);
+  
+  const characters = '01';
+  const fontSize = 10;
+  const columns = canvas.width/fontSize;
+  const drops = [];
+  
+  for(let x = 0; x < columns; x++) {
+    drops[x] = 1;
+  }
+  
+  function draw() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.fillStyle = '#00ff85';
+    ctx.font = fontSize + 'px monospace';
+    
+    for(let i = 0; i < drops.length; i++) {
+      const text = characters.charAt(Math.floor(Math.random() * characters.length));
+      ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+      
+      if(drops[i]*fontSize > canvas.height && Math.random() > 0.975)
+        drops[i] = 0;
+      
+      drops[i]++;
+    }
+  }
+  
+  setInterval(draw, 33);
+}
+
+function setSearch(term) {
+  document.getElementById('futureSearch').value = term;
+  searchFuture();
+}
+
+async function searchFuture() {
+  const searchTerm = document.getElementById('futureSearch').value;
+  const resultsContainer = document.getElementById('searchResults');
+  
+  if (!searchTerm) {
+    alert('Please enter a search term');
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/ai_completion', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prompt: `Generate future predictions for the search term: ${searchTerm}. 
+        Include technological developments, societal impact, and probability of occurrence.
+        
+        <typescript-interface>
+        interface SearchResult {
+          title: string;
+          description: string;
+          probability: number;
+          timeframe: string;
+          impacts: string[];
+          technologies: string[];
+        }
+        
+        interface SearchResponse {
+          results: SearchResult[];
+        }
+        </typescript-interface>`,
+        data: searchTerm
+      })
+    });
+
+    const data = await response.json();
+    
+    resultsContainer.innerHTML = data.results.map(result => `
+      <div class="search-result-card">
+        <h3>${result.title}</h3>
+        <div class="probability-bar">
+          <div class="probability-fill" style="width: ${result.probability}%"></div>
+        </div>
+        <p><strong>Probability:</strong> ${result.probability}%</p>
+        <p><strong>Timeframe:</strong> ${result.timeframe}</p>
+        <p>${result.description}</p>
+        <div class="tag-container">
+          ${result.technologies.map(tech => `
+            <span class="tag">${tech}</span>
+          `).join('')}
+        </div>
+        <div class="prediction-changes">
+          <h4>Potential Impacts</h4>
+          <ul>
+            ${result.impacts.map(impact => `
+              <li>${impact}</li>
+            `).join('')}
+          </ul>
+        </div>
+      </div>
+    `).join('');
+
+  } catch (error) {
+    resultsContainer.innerHTML = `
+      <div class="error-message">
+        <p>Error searching predictions: ${error.message}</p>
+      </div>
+    `;
+  }
+}
+
+// Add event listener for search input
+document.getElementById('futureSearch')?.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    searchFuture();
+  }
+});
+</script>
+</body></html>
